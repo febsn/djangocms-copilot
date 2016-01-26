@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ artists }}
+{% comment %}
+<ul>
+{% for artist in artists %}
+<li><a href="{% url 'get' artist.id %}">{{ artist.stageName }}</a></li>
+{% endfor %}
+</ul>
+{% endcomment %}
+{% endblock content %}

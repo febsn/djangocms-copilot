@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ artist.stageName }}</h1>
+{% for video in artist.videos.content %}
+    {{ video }}
+{% endfor %}
+{% endblock %}
