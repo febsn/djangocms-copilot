@@ -1,5 +1,5 @@
 from pip.req import parse_requirements
-from distutils import stup, find_packages
+from setuptools import setup, find_packages
 
 setup(
     name="django-copilot",
