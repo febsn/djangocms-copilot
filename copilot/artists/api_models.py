@@ -15,7 +15,7 @@ class Artist(object):
     def _get(self):
         data = self.client.get('artists/{id}'.format(id=self.id)).json()
         props = ['assets', 'stageName', 'web', 'shortBio', 'longBio',
-            'facebook', 'myspace', 'twitter', 'mainact']
+            'facebook', 'myspace', 'mainact']
         [ setattr(self, prop, data[prop]) for prop in props ]
 
     def news(self, page=1):

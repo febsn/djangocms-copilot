@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>{{ artist.stageName }}</h1>
+<p>{{ artist.longBio|safe }}</p>
 {% for video in artist.videos.content %}
     {{ video }}
 {% endfor %}

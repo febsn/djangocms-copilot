@@ -16,9 +16,9 @@ class ArtistListView(CopilotView):
     def get_context_data(self, **kwargs):
         context = super(ArtistListView, self).get_context_data(**kwargs)
         response = self.client.get_paginated('artists/')
-#        data = json.loads(response.text)
-#        context['artists'] = data['content']
-        context['artists'] = response.text
+        data = json.loads(response.text)
+        context['artists'] = data['content']
+#        context['artists'] = response.text
         return context
 
 
