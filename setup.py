@@ -2,7 +2,7 @@ from pip.req import parse_requirements
 from setuptools import setup, find_packages
 
 setup(
-    name="django-copilot",
+    name="djangocms-copilot",
     version="0.0.1.dev1",
     description="Django-CMS apphook and API client for the Copilot management software public API",
     author="Fabian Lehner",
