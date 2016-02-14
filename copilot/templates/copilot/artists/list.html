@@ -3,7 +3,7 @@
 {% block content %}
 <ul>
 {% for artist in artists %}
-<li><a href="{% url 'get' artist.id %}">{{ artist.stageName }}</a></li>
+<li><a href="{% url 'artists:get' id=artist.id %}">{{ artist.stageName }}</a></li>
 {% endfor %}
 </ul>
 {% endblock content %}
