@@ -2,8 +2,12 @@
 from __future__ import unicode_literals
 
 from copilot.conf import settings
-
 from copilot.api import CopilotClient
+
+import logging
+logger = logging.getLogger('djangocms-copilot')
+
+logger.critical('test')
 
 class Artist(object):
     def __init__(self, id, **kwargs):
@@ -14,9 +18,14 @@ class Artist(object):
 
     def _get(self):
         data = self.client.get('artists/{id}'.format(id=self.id)).json()
-        props = ['assets', 'stageName', 'web', 'shortBio', 'longBio',
+        props = ['assets', 'bookerSimple', 'stageName', 'web', 'shortBio', 'longBio',
             'facebook', 'myspace', 'mainact']
-        [ setattr(self, prop, data[prop]) for prop in props ]
+        for prop in props:
+            try:
+                setattr(self, prop, data[prop])
+            except KeyError:
+                logger.warning("Property {prop} is missing in copilot API "
+                    "response for Artist {id}".format(prop=prop, id=self.id))
 
     def news(self, page=1):
         return self.client.get_paginated('artists/{id}/newsEntries'.format(
@@ -36,6 +45,6 @@ class Artist(object):
             endpoint += '/'+start_date.isoformat()
             if end_date:
                 endpoint += '/'+end_date.isoformat()
-        return self.client.get_paginated('artists/{id}/events', page=page).json(
-            )
+        return self.client.get_paginated('artists/{id}/events'.format(
+            id=self.id), page=page).json()
 
