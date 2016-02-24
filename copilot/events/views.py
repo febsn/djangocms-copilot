@@ -9,6 +9,6 @@ class EventListView(CopilotView):
 
     def get_context_data(self, **kwargs):
         context = super(EventListView, self).get_context_data(**kwargs)
-        data = self.client.get('events/').json()
+        data = self.client.get_paginated('events/', external=False).json()
         context['events'] = data['content']
         return context
