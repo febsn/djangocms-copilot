@@ -2,11 +2,25 @@
 
 {% block content %}
 <h1>{{ artist.stageName }}</h1>
-<p>{{ artist.longBio|safe }}</p>
+{{ artist.longBio|safe }}
 <section class="videos">
 {% for video in artist.videos.content %}
     <h2>{{ video.name }}</h2>
     {{ video.embedCode|safe }}
+{% endfor %}
+</section>
+<section class="events">
+    <ul>
+    {% for event in artist.events.content %}
+        <li>{{ event.dateOfEvent }} {{ event.location.address.city }} / {{ event.location.name }}</li>
+    {% endfor %}
+    </ul>
+</section>
+<section class="assets">
+{% for asset in artist.assets %}
+    {% if asset.mimeType == 'image/jpeg' %}
+        <img src="{{ asset.downloadUrl }}?width=400" />
+    {% endif %}
 {% endfor %}
 </section>
 {% endblock %}
