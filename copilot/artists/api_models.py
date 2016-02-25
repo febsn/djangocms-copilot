@@ -7,8 +7,6 @@ from copilot.api import CopilotClient
 import logging
 logger = logging.getLogger('djangocms-copilot')
 
-logger.critical('test')
-
 class Artist(object):
     def __init__(self, id, **kwargs):
         super(Artist, self).__init__(**kwargs)

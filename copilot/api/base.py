@@ -10,6 +10,9 @@ except ImportError:
 
 from .exceptions import HttpError
 
+import logging
+logger = logging.getLogger('djangocms-copilot')
+
 class APIClientBase(object):
     """
     Base class for REST API clients
@@ -36,6 +39,8 @@ class APIClientBase(object):
 
         if len(kwargs):
             url += '?' + urlencode(kwargs)
+
+        logger.info("API call: {}".format(url))
 
         r = requests.get(url, auth=self.auth)
         return self._handle_response(r)

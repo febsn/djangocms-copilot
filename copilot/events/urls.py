@@ -6,5 +6,5 @@ from django.conf.urls import *
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.EventListView.as_view(), name='test')
+    url(r'^$', views.EventListView.as_view(), name='list')
 ]
