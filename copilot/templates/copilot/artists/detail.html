@@ -10,11 +10,17 @@
 {% endfor %}
 </section>
 <section class="events">
-    <ul>
-    {% for event in artist.events.content %}
-        <li>{{ event.dateOfEvent }} {{ event.location.address.city }} / {{ event.location.name }}</li>
+    {% regroup artist.events.all.content by dateOfEvent.year as years %}
+    {% for year in years %}
+    <section class="event-year">
+        <h3>{{ year.grouper }}</h3>
+        <ul>
+            {% for event in year.list %}
+                <li class="row"><p class="col-md-9 col-lg-10">{{ event.dateOfEvent.date }} / <a href="#">{{ event.location.address.city }} / {{ event.location.name }}</a></p><button type="button" class="btn btn-success col-md-3 col-lg-2">/ Tickets /</button></li>
+            {% endfor %}
+        </ul>
+    </section>
     {% endfor %}
-    </ul>
 </section>
 <section class="assets">
 {% for asset in artist.assets %}
