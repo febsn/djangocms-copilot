@@ -76,6 +76,17 @@ class EventManager(object):
                     pass
         return events
 
+
+    def year(self, year=None):
+        if year is None:
+            year = datetime.now().year
+        endpoint = self._get_endpoint(
+            start_date = date(year, 1, 1),
+            end_date = date(year, 12, 31)
+        )
+        return self._get(endpoint)
+
+
     def _get_years(self):
         endpoint = self._get_endpoint()
         events = self._get(endpoint)

@@ -13,6 +13,6 @@ class EventListView(CopilotListView):
     def get_context_data(self, **kwargs):
         context = super(EventListView, self).get_context_data(**kwargs)
         manager = EventManager()
-        data = manager.all()
+        data = manager.year(kwargs.get('year', None))
         context['events'] = data['content']
         return context
