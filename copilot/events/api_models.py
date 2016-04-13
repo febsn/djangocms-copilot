@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from collections import defaultdict
+
 from datetime import datetime, date
 
 from copilot.conf import settings
@@ -66,6 +66,7 @@ class EventManager(object):
             'external': False,
         }
         events = self.client.get_paginated(endpoint, **kwargs).json()
+        events['artists'] = {}
         for event in events['content']:
             try:
                 event['dateOfEvent'] = datetime.strptime(event['dateOfEvent']+event['start'], '%Y-%m-%d%H:%M:%S.%f')
@@ -74,15 +75,52 @@ class EventManager(object):
                     event['dateOfEvent'] = datetime.strptime(event['dateOfEvent'], '%Y-%m-%d')
                 except KeyError:
                     pass
+            for cast_item in event['cast']:
+                try:
+                    events['artists'][cast_item['artist']['id']]['events'].append(event)
+                except KeyError:
+                    events['artists'][cast_item['artist']['id']] = {
+                        'artist': cast_item['artist'],
+                        'events': [event, ]
+                    }
         return events
+
 
     def _get_years(self):
         endpoint = self._get_endpoint()
         events = self._get(endpoint)
-        years = defaultdict(list)
+        years = {}
         for event in events:
-            years[event['dateOfEvent'].year].append(event)
+            try:
+                years[event['dateOfEvent'].year].append(event)
+            except KeyError:
+                years[event['dateOfEvent'].year] = [event, ]
         return years
+
+
+    def year(self, year=None):
+        """
+        Return events for year `year`.
+        """
+        if year is None:
+            year = datetime.now().year
+        endpoint = self._get_endpoint(
+            start_date=date(year, 1, 1),
+            end_date=date(year, 12, 31)
+        )
+        return self._get(endpoint)
+
+    def prevnext(self, year=None):
+        """
+        Return events for year `year` and one year before and after.
+        """
+        if year is None:
+            year = datetime.now().year
+        endpoint = self._get_endpoint(
+            start_date=date(year-1, 1, 1),
+            end_date=date(year+1, 12, 31)
+        )
+        return self._get(endpoint)
 
     @property
     def years(self):
@@ -93,6 +131,9 @@ class EventManager(object):
             return self._years
 
     def all(self):
+        """
+        Return all events.
+        """
         return self._get(self._get_endpoint())
 
     def upcoming(self):
