@@ -36,8 +36,12 @@ class Artist(object):
                 self.media[asset_tag['tagName']].append(asset)
 
     def news(self, page=1):
-        return self.client.get_paginated('artists/{id}/newsEntries'.format(
-            id=self.id), page=page).json()
+        kwargs = {
+            'page': page,
+            'references.type': 'ARTIST',
+            'references.id': self.id,
+        }
+        return self.client.get_paginated('news', **kwargs).json()
 
     def videos(self, page=1):
         return self.client.get_paginated('artists/{id}/videoEntries'.format(
