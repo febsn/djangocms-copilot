@@ -1,3 +1,8 @@
 {% for article in news %}
     {{ article.headline }}
+    {% for reference in article.references %}
+        {% if reference.type = 'ARTIST' %}
+        <a href="{% url 'artists:get' id=reference.id %}">mehr</a>
+        {% endif %}
+    {% endfor %}
 {% endfor %}
