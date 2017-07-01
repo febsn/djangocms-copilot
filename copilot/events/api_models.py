@@ -48,7 +48,7 @@ class EventManager(object):
             # the API allows only calls with start_date AND end_date, or neither of them.
             # If there is only start_date given, we assume a delta of one year.
             endpoint += self._get_to().format(
-                getattr(kwargs, 'end_date', date(start_date.year+1, start_date.month, start_date.day)).isoformat()
+                kwargs.get('end_date', date(start_date.year+1, start_date.month, start_date.day)).isoformat()
             )
         except KeyError:
             # no problem if start_date and end_date not given
@@ -64,12 +64,10 @@ class EventManager(object):
     def _get_sorting(self):
         return self.SORTING
 
-    def _get(self, endpoint):
+    def _get(self, endpoint, **kwargs):
         logger.debug('API call: {}'.format(endpoint))
-        kwargs = {
-            'page.sort': self._get_sorting(),
-            'external': False,
-        }
+        kwargs.setdefault('page.sort', self._get_sorting())
+        kwargs['external'] = False
         events = self.client.get_paginated(endpoint, **kwargs).json()
         events['artists'] = {}
         for event in events['content']:
@@ -141,10 +139,10 @@ class EventManager(object):
         """
         return self._get(self._get_endpoint())
 
-    def upcoming(self):
+    def upcoming(self, **kwargs):
         endpoint = self._get_endpoint(
             start_date=datetime.now().date())
-        return self._get(endpoint)
+        return self._get(endpoint, **kwargs)
 
     def __str__(self):
         if self.artist_id:

@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from .api import CopilotClient
 from .artists.api_models import Artist
+from .events.api_models import EventManager
 from .conf import settings
 from .models import News, EventList
 
@@ -30,15 +31,25 @@ class EventListPlugin(CMSPluginBase):
     module = "Copilot"
     name =_("Events Plugin")
     model = EventList
-    render_template = "copilot/plugins/event_list.html"
+
+    def get_render_template(self, context, instance, placeholder):
+        if instance.artist_id:
+            return "copilot/plugins/artist-event-list.html"
+        else:
+            return "copilot/plugins/event-list.html"
 
     def render(self, context, instance, placeholder):
         client = CopilotClient(settings.COPILOT_USER)
-        #TODO pagination/count
         #TODO nice admin interface with choices
+        kwargs = {
+            'page.size': instance.event_count,
+        }
         if instance.artist_id:
             artist = Artist(instance.artist_id)
-            context['events'] = artist.events.upcoming()['content']
-        #TODO context for general event list
+            context['artist'] = artist
+            context['events'] = artist.events.upcoming(**kwargs)['content']
+        else:
+            manager = EventManager()
+            context['events'] = manager.upcoming(**kwargs)['content']
         return context
 plugin_pool.register_plugin(EventListPlugin)
