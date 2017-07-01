@@ -7,5 +7,3 @@ class Artist(BaseEntity):
 
     def all(self):
         return self._client._get_paginated(self.endpoint)
-
-    

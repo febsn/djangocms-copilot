@@ -43,10 +43,15 @@ class EventManager(object):
             endpoint = self._get_endpoint_for_all(**kwargs)
 
         try:
-            endpoint += self._get_from().format(kwargs['start_date'].isoformat())
-            endpoint += self._get_to().format(kwargs['end_date'].isoformat())
+            start_date = kwargs['start_date']
+            endpoint += self._get_from().format(start_date.isoformat())
+            # the API allows only calls with start_date AND end_date, or neither of them.
+            # If there is only start_date given, we assume a delta of one year.
+            endpoint += self._get_to().format(
+                getattr(kwargs, 'end_date', date(start_date.year+1, start_date.month, start_date.day)).isoformat()
+            )
         except KeyError:
-            # no problem if start_date or end_date not given
+            # no problem if start_date and end_date not given
             pass
         return endpoint
 

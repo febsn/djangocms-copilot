@@ -1,0 +1,3 @@
+{% if event.dateOfEvent %}
+    <li>{{ event.dateOfEvent }} <strong>{{ event.cast.0.artist.stageName }}</strong> {{ event.location.address.city }} / {{ event.location.name }}</li>
+{% endif %}
