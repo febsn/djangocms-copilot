@@ -17,6 +17,12 @@ class RecordManager(BaseApiManager):
     ARTIST_ENDPOINT = 'artists/{id}/records/'
     SORTING = 'releaseDate,desc'
 
+    def _get(self, endpoint, **kwargs):
+        items = super(RecordManager, self)._get(endpoint, **kwargs)
+        for item in items['content']:
+            item['releaseDate'] = datetime.strptime(item['releaseDate'], '%Y-%m-%d')
+        return items
+
     def __str__(self):
         if self.artist_id:
             return 'RecordManager for {}'.format(self.artist_id)

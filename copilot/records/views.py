@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from datetime import datetime
 from django.utils.timezone import now
 
 from ..base_views import CopilotView, CopilotListView
@@ -21,5 +22,7 @@ class RecordDetailView(CopilotView):
 
     def get_context_data(self, id, **kwargs):
         context = super(RecordDetailView, self).get_context_data(**kwargs)
-        context['record'] = self.client.get("records/{}".format(id)).json()
+        record = self.client.get("records/{}".format(id)).json()
+        record['releaseDate'] = datetime.strptime(record['releaseDate'], '%Y-%m-%d')
+        context['record'] = record
         return context
