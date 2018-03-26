@@ -6,11 +6,9 @@ from datetime import datetime, date
 from copilot.conf import settings
 from copilot.api import CopilotClient
 
-import logging
-logger = logging.getLogger('djangocms-copilot')
+from copilot.base_api_models import BaseApiManager
 
-
-class EventManager(object):
+class EventManager(BaseApiManager):
     ALL_ENDPOINT = 'events/'
     ARTIST_ENDPOINT = 'artists/{id}/events/'
     SORTING = 'dateOfEvent,asc'
@@ -18,11 +16,6 @@ class EventManager(object):
     ARTIST_FROM = '{}/'
     TO = 'to/{}/'
     ARTIST_TO = '{}/'
-
-    def __init__(self, artist_id=None, **kwargs):
-        super(EventManager, self).__init__(**kwargs)
-        self.client = CopilotClient(settings.COPILOT_USER)
-        self.artist_id = artist_id
 
     def _get_from(self):
         if self.artist_id:
@@ -37,11 +30,7 @@ class EventManager(object):
             return self.TO
 
     def _get_endpoint(self, **kwargs):
-        if self.artist_id:
-            endpoint = self._get_endpoint_for_artist(**kwargs)
-        else:
-            endpoint = self._get_endpoint_for_all(**kwargs)
-
+        endpoint = super(EventManager, self)._get_endpoint(**kwargs)
         try:
             start_date = kwargs['start_date']
             endpoint += self._get_from().format(start_date.isoformat())
@@ -55,20 +44,9 @@ class EventManager(object):
             pass
         return endpoint
 
-    def _get_endpoint_for_all(self, **kwargs):
-        return self.ALL_ENDPOINT
-
-    def _get_endpoint_for_artist(self, **kwargs):
-        return self.ARTIST_ENDPOINT.format(id=self.artist_id)
-
-    def _get_sorting(self):
-        return self.SORTING
-
     def _get(self, endpoint, **kwargs):
-        logger.debug('API call: {}'.format(endpoint))
-        kwargs.setdefault('page.sort', self._get_sorting())
         kwargs['external'] = False
-        events = self.client.get_paginated(endpoint, **kwargs).json()
+        events = super(EventManager, self)._get(endpoint, **kwargs)
         events['artists'] = {}
         for event in events['content']:
             try:
@@ -132,12 +110,6 @@ class EventManager(object):
         except AttributeError:
             self._years = self._get_years()
             return self._years
-
-    def all(self):
-        """
-        Return all events.
-        """
-        return self._get(self._get_endpoint())
 
     def upcoming(self, **kwargs):
         endpoint = self._get_endpoint(

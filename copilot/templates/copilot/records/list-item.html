@@ -1,0 +1,8 @@
+<li class="records-item">
+    <a href="{% url 'records:detail' id=record.id %}">
+        {% if record.assets.0 %}
+        <img src="{{ record.assets.0.downloadUrl }}" alt="Cover of {{ record.name }}" />
+        {% endif %}
+        {{ record.name }}
+    </a>
+</li>
