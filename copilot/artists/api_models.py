@@ -20,8 +20,9 @@ class Artist(object):
 
     def _get(self):
         data = self.client.get('artists/{id}'.format(id=self.id)).json()
-        props = ['assets', 'bookerSimple', 'stageName', 'web', 'shortBio', 'longBio',
-            'facebook', 'myspace', 'twitter', 'mainact']
+        props = ['assets', 'bookerSimple', 'stageName', 'web', 'shortBio',
+            'longBio', 'facebook', 'instagram', 'myspace', 'snapchat',
+            'twitter', 'youtube', 'mainact']
         for prop in props:
             try:
                 setattr(self, prop, data[prop])
