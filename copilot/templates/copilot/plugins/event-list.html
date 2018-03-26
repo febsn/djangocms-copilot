@@ -1,0 +1,7 @@
+<ul>
+{% for event in events %}
+    {% block event-list-item %}
+    {% include "copilot/events/list-item-artist.html" %}
+    {% endblock event-list-item %}
+{% endfor %}
+</ul>

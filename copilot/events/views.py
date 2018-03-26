@@ -15,4 +15,5 @@ class EventListView(CopilotListView):
         manager = EventManager()
         data = manager.year(kwargs.get('year', None))
         context['events'] = data['content']
+        context['artists'] = data['artists']
         return context
